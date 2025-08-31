@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .weather-card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 300px;
+    }
+    input {
+      padding: 10px;
+      width: 80%;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 15px;
+      border: none;
+      background: #4facfe;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #00c6fb;
+    }
+    .weather-info {
+      margin-top: 15px;
+    }
+    .weather-info img {
+      width: 60px;
+    }
+    .temp {
+      font-size: 28px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    .condition {
+      font-size: 18px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="weather-card">
+    <h2>Weather App</h2>
+    <input type="text" id="cityInput" placeholder="Enter city name">
+    <button onclick="getWeather()">Get Weather</button>
+
+    <div class="weather-info" id="weatherInfo" style="display:none;">
+      <h3 id="cityName"></h3>
+      <img id="weatherIcon" alt="Weather Icon">
+      <div class="temp" id="temperature"></div>
+      <div class="condition" id="condition"></div>
+    </div>
+  </div>
+
+  <script>
+    async function getWeather() {
+      const city = document.getElementById("cityInput").value.trim();
+      if (!city) {
+        alert("Please enter a city name");
+        return;
+      }
+
+      const apiKey = "c3383a3a84ac4227871140006253108";
+      const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&aqi=yes`;
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("City not found");
+        const data = await response.json();
+
+        document.getElementById("cityName").innerText = `${data.location.name}, ${data.location.country}`;
+        document.getElementById("temperature").innerText = `${data.current.temp_c}°C`;
+        document.getElementById("condition").innerText = data.current.condition.text;
+        document.getElementById("weatherIcon").src = "https:" + data.current.condition.icon;
+
+        document.getElementById("weatherInfo").style.display = "block";
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+  </script>
+</body>
+</html>
